@@ -23,6 +23,8 @@ public class InputArgumentsParser {
     private static final String HELP_MODE = "--h";
     private static final String VERSION_MODE = "--v";
 
+    private static final String COMMA = ",";
+
     private static final String ERR_ILLEGAL_OPTION = "This option does not exist : ";
 
     private static final String MSG_VERSION = "Apk Analyzer version : 0.1";
@@ -241,13 +243,31 @@ public class InputArgumentsParser {
      *
      * @return Input apk path
      */
-    public Path getInputApkApth() {
+    public Path[] getInputApkApth() {
+        Path[] resultArray = null;
+
         if (isValueNotExistInValueMap()) {
             return null;
         }
 
         if (isExistValue(INPUT_MODE)) {
-            return Paths.get(valueMap.get(INPUT_MODE));
+
+            if (valueMap.get(INPUT_MODE).contains(COMMA)) {
+                String[] splitArgument = valueMap.get(INPUT_MODE).split(COMMA);
+
+                resultArray = new Path[splitArgument.length];
+
+                for (int i = 0; i < resultArray.length; i++) {
+                    resultArray[i] = Paths.get(splitArgument[i]);
+                }
+
+                return resultArray;
+            } else {
+                resultArray = new Path[1];
+                resultArray[0] = Paths.get(valueMap.get(INPUT_MODE));
+
+                return resultArray;
+            }
         }
 
         return null;
