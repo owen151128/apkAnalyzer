@@ -20,6 +20,7 @@ public class InputArgumentsParser {
 
     private static final String PATH_MODE = "-p";
     private static final String INPUT_MODE = "-i";
+    private static final String DIR_MODE = "-d";
     private static final String HELP_MODE = "--h";
     private static final String VERSION_MODE = "--v";
 
@@ -27,7 +28,7 @@ public class InputArgumentsParser {
 
     private static final String ERR_ILLEGAL_OPTION = "This option does not exist : ";
 
-    private static final String MSG_VERSION = "Apk Analyzer version : 0.1";
+    private static final String MSG_VERSION = "Apk Analyzer version : 1.0";
     private static final String MSG_USEAGE = "Usage : Apk Analyzer [options] <input-path> ..." +
             "\n" +
             "where <input-path> are any file possible!" +
@@ -38,6 +39,8 @@ public class InputArgumentsParser {
             "\n" +
             "-i \t\t input apk path <input-path>" +
             "\n" +
+            "-d \t\t include input apks directory path <input-path>" +
+            "\n" +
             "--h \t print this message." +
             "\n" +
             "--v \t print the version of Apk Analyzer";
@@ -47,6 +50,8 @@ public class InputArgumentsParser {
     private HashMap<String, String> valueMap = null;
 
     private String[] arguments;
+
+    private static boolean isPrintedUsage = false;
 
     /**
      * Use Single-tone pattern
@@ -156,6 +161,7 @@ public class InputArgumentsParser {
     private void addOption() {
         doubleOptionSet.add(PATH_MODE);
         doubleOptionSet.add(INPUT_MODE);
+        doubleOptionSet.add(DIR_MODE);
         singleOptionSet.add(HELP_MODE);
         singleOptionSet.add(VERSION_MODE);
     }
@@ -239,6 +245,23 @@ public class InputArgumentsParser {
     }
 
     /**
+     * Get input directory path
+     *
+     * @return Input directory path
+     */
+    public Path getInputDirPath() {
+        if (isValueNotExistInValueMap()) {
+            return null;
+        }
+
+        if (isExistValue(DIR_MODE)) {
+            return Paths.get(valueMap.get(DIR_MODE));
+        }
+
+        return null;
+    }
+
+    /**
      * Get input apk path
      *
      * @return Input apk path
@@ -274,9 +297,19 @@ public class InputArgumentsParser {
     }
 
     /**
+     * Get Printed Usage status
+     *
+     * @return Printed Usage status
+     */
+    public boolean isPrintedUsage() {
+        return isPrintedUsage;
+    }
+
+    /**
      * Print usage Method
      */
-    private void printUsage() {
+    public static void printUsage() {
+        isPrintedUsage = true;
         System.out.println(MSG_USEAGE);
     }
 
